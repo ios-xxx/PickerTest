@@ -97,7 +97,6 @@
         
         [ provinces addObject:citystr];
     }
-    
     //默认省
     province=@"北京";
     //默认市
@@ -185,7 +184,6 @@
 {
     switch (component) {
             
-            
         case 0:
         {
             [citys removeAllObjects];
@@ -221,20 +219,13 @@
             //获得市的县和区
             NSMutableArray * currenCounty = [self getCountys:row];
             
-            if (row > 0)
-            {
-                [pickerView selectRow:1 inComponent:2 animated:YES];
-            }
-            else
-            {
-                [pickerView selectRow:0 inComponent:2 animated:YES];
-            }
-            
-            [pickerView reloadComponent:2];
-            
             city = citys[row];
             
-            county = currenCounty[row];
+            county = currenCounty[0];
+            
+            [pickerView selectRow:0 inComponent:2 animated:YES];
+            
+            [pickerView reloadComponent:2];
             
             break;
         }
@@ -244,7 +235,6 @@
     }
     NSLog(@"%@/%@/%@",province,city,county);
 }
-
 //得到当前县和区
 -(NSMutableArray *)getCountys:(NSInteger )_row
 {
@@ -266,11 +256,24 @@
     //把转换好的字符串再转回数组（通过“/”间隔元素）
     NSArray * countyArr = [countyStr componentsSeparatedByString:NSLocalizedString(@"/", nil)];
     
+    NSMutableArray * countySaveArr = [[NSMutableArray alloc]initWithCapacity:countyArr.count+10];
+    
+    for (int i = 0; i < countyArr.count; i ++)
+    {
+        NSMutableString * str =[NSMutableString stringWithString:countyArr[i]];
+        
+        if (i > 0)
+        {
+            [self deleteStr:str andToStr:@"," andBOOL:NO andInsert:@""];
+        }
+        NSLog(@"%@",str);
+        
+        [countySaveArr addObject:str];
+    }
+    
     // NSLog(@"%@",countyArr);
     
-    // NSLog(@"%@",delteStr);
-    
-    NSArray * countyTmpArr = [countyArr[_row] componentsSeparatedByString:@","];
+    NSArray * countyTmpArr = [countySaveArr[_row] componentsSeparatedByString:@","];
     
     [countys removeAllObjects];
     
